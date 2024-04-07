@@ -1,20 +1,35 @@
 package project;
 
-import lombok.AllArgsConstructor;
+import static project.Utils.randomSleep;
+
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class Barber implements Runnable {
 
-	private String name;
+	private final String name;
+	private Client clientInAttendance;
+
+	public Barber(String name) {
+		this.name = name;
+	}
 
 	@Override
 	public void run() {
-		System.out.println("Runned");
+		randomSleep();
+		System.out.println(getName() + " Runned");
 	}
 
 	public Thread startThread() {
 		return Thread.startVirtualThread(this);
+	}
+
+	public void receivePayment() {
+		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
+			System.out.println("Iniciado pagamento do client " + getClientInAttendance().getName());
+			randomSleep();
+			System.out.println("Finalizado pagamento do client " + getClientInAttendance().getName());
+		}
+		this.clientInAttendance = null;
 	}
 }
