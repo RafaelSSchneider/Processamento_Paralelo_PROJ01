@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BarberShop {
 
 	public static final AtomicBoolean POS_IN_USE = new AtomicBoolean(false);
+	public static final Barber barber1 = new Barber("Artur");
+	public static final Barber barber2 = new Barber("Éber");
+	public static final Barber barber3 = new Barber("Rafael");
 	private static final int CAPACITY = 20;
 	public static final AtomicReference<LinkedBlockingQueue<Client>> QUEUE = new AtomicReference<>(new LinkedBlockingQueue<>(CAPACITY));
 	private static boolean hasStarted = false;
@@ -19,10 +22,7 @@ public class BarberShop {
 		}
 		hasStarted = true;
 
-		final var barber1 = new Barber("Artur");
-		final var barber2 = new Barber("Éber");
-		final var barber3 = new Barber("Rafael");
-
+		startVirtualThread(new LoggerStatus());
 		startVirtualThread(new ClientFactory());
 		final var threadBarber1 = startVirtualThread(barber1);
 		final var threadBarber2 = startVirtualThread(barber2);
