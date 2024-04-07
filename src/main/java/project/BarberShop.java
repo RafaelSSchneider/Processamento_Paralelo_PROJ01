@@ -1,11 +1,12 @@
 package project;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BarberShop {
 	private static boolean hasStarted = false;
+	public static final AtomicBoolean POS_IN_USE = new AtomicBoolean(false);
 
 	public static AtomicReference<Queue> QUEUE = new AtomicReference<>(new PriorityQueue());
 
