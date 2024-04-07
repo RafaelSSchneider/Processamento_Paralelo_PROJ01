@@ -28,6 +28,14 @@ public class Utils {
 		}
 	}
 
+	public static void randomSleep(int minSeconds, int maxSeconds) {
+		try {
+			Thread.sleep(RANDOM.nextLong(minSeconds, maxSeconds) * 1000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static String randomName() {
 		return new Faker().name().fullName();
 	}
