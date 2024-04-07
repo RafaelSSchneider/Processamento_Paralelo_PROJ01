@@ -14,6 +14,7 @@ public class Client implements Runnable {
 
 	public Client() {
 		this.name = randomName();
+		System.out.println(this.name + " created");
 	}
 
 	@Override
