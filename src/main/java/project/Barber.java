@@ -20,10 +20,6 @@ public class Barber implements Runnable {
 		System.out.println(getName() + " Runned");
 	}
 
-	public Thread startThread() {
-		return Thread.startVirtualThread(this);
-	}
-
 	public void receivePayment() {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
 			System.out.println("Iniciado pagamento do client " + getClientInAttendance().getName());
