@@ -18,7 +18,7 @@ public class Client implements Runnable {
 	public Client() {
 		this.name = randomName();
 
-    int randomIndex = randomNumber(0, 5);
+    int randomIndex = randomNumber(0, Haircut.class.getEnumConstants().length);
     this.desiredHaircut = Haircut.values()[randomIndex];
 
 		System.out.println(this.name + " created, they want " + desiredHaircut.getName());
