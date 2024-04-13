@@ -24,7 +24,7 @@ public class Barber implements Runnable {
         Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
 				System.out.println("Atendimento iniciado para o cliente " + clientInAttendance.getName());
 
-        this.cortarCabelo(clientHaircut);
+        this.doHaircut(clientHaircut);
 
 				System.out.println("Atendimento finalizado para o cliente " + clientInAttendance.getName());
 				receivePayment();
@@ -35,7 +35,7 @@ public class Barber implements Runnable {
 		}
 	}
 
-  private void cortarCabelo(Haircut desiredHaircut) {
+  private void doHaircut(Haircut desiredHaircut) {
     System.out.println("Doing " + desiredHaircut.getName());
     sleep(desiredHaircut.getTimeToCut());
   }
