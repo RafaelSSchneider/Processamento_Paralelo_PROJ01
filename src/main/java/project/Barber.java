@@ -2,6 +2,7 @@ package project;
 
 import static java.util.Objects.nonNull;
 import static project.Utils.randomSleep;
+import static project.Utils.sleep;
 
 import lombok.Getter;
 
@@ -20,8 +21,11 @@ public class Barber implements Runnable {
 		while (true) {
 			this.clientInAttendance = BarberShop.QUEUE.get().poll();
 			while (nonNull(clientInAttendance)) {
+				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
 				System.out.println("Atendimento iniciado para o cliente " + clientInAttendance.getName());
-				randomSleep();
+
+				this.doHaircut(clientHaircut);
+
 				System.out.println("Atendimento finalizado para o cliente " + clientInAttendance.getName());
 				receivePayment();
 				randomSleep(1, 2);
@@ -31,10 +35,15 @@ public class Barber implements Runnable {
 		}
 	}
 
+	private void doHaircut(Haircut desiredHaircut) {
+		System.out.println("Doing " + desiredHaircut.getName());
+		sleep(desiredHaircut.getTimeToCut());
+	}
+
 	private void receivePayment() {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
 			System.out.println("Iniciado pagamento do client " + getClientInAttendance().getName());
-			randomSleep(1,2);
+			randomSleep(1, 2);
 			System.out.println("Finalizado pagamento do client " + getClientInAttendance().getName());
 		}
 		this.clientInAttendance = null;
