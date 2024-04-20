@@ -1,6 +1,8 @@
 package project;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.nonNull;
+import static project.LoggerStatus.log;
 import static project.Utils.randomSleep;
 import static project.Utils.sleep;
 
@@ -11,41 +13,62 @@ public class Barber implements Runnable {
 
 	private final String name;
 	private Client clientInAttendance;
+	private boolean chair = false;
 
 	public Barber(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		while (true) {
-			this.clientInAttendance = BarberShop.QUEUE.get().poll();
+			BarberShop.COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
+				this.chair = true;
 				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
-				System.out.println("Atendimento iniciado para o cliente " + clientInAttendance.getName());
+				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
 				this.doHaircut(clientHaircut);
 
-				System.out.println("Atendimento finalizado para o cliente " + clientInAttendance.getName());
+				log(this.getClass(), String.format("%s: Atendimento finalizado para o cliente %s", this.name, clientInAttendance.getName()));
 				receivePayment();
 				randomSleep(1, 2);
-				this.clientInAttendance = BarberShop.QUEUE.get().poll();
+				BarberShop.COUCH.notifyClient(this);
 			}
-			//todo
+			try {
+				this.chair = true;
+				log(this.getClass(), String.format("%s: Dormindo", this.name));
+				this.wait();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			log(this.getClass(), String.format("%s: Acordando", this.name));
 		}
 	}
 
+	public synchronized void notifyBarber() {
+		this.notify();
+	}
+
+	public synchronized void setClientInAttendance(Client clientInAttendance) {
+		this.clientInAttendance = clientInAttendance;
+		log(this.getClass(), String.format("%s recebeu o cliente %s ", this.name, this.clientInAttendance.getName()));
+		this.notifyBarber();
+	}
+
 	private void doHaircut(Haircut desiredHaircut) {
-		System.out.println("Doing " + desiredHaircut.getName());
-		sleep(desiredHaircut.getTimeToCut());
+		log(this.getClass(), String.format("%s: Doing %s", this.name, desiredHaircut.getName()));
+		sleep(desiredHaircut.getTimeToCut(), SECONDS);
 	}
 
 	private void receivePayment() {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
-			System.out.println("Iniciado pagamento do client " + getClientInAttendance().getName());
+			log(this.getClass(), String.format(this.name + ": Iniciado pagamento do client " + getClientInAttendance().getName()));
 			randomSleep(1, 2);
-			System.out.println("Finalizado pagamento do client " + getClientInAttendance().getName());
+			log(this.getClass(), String.format(this.name + ": Finalizado pagamento do client " + getClientInAttendance().getName()));
 		}
+		BarberShop.POS_IN_USE.set(false);
+		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
 }
