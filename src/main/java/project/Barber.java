@@ -57,15 +57,15 @@ public class Barber implements Runnable {
 	}
 
 	private void doHaircut(Haircut desiredHaircut) {
-		log(this.getClass(), String.format("%s: Doing %s ", this.name, desiredHaircut.getName()));
-		//sleep(desiredHaircut.getTimeToCut(), SECONDS);
+		log(this.getClass(), String.format("%s: está realizando: %s ", this.name, desiredHaircut.getName()));
+		sleep(desiredHaircut.getTimeToCut(), SECONDS);
 	}
 
 	private void receivePayment() {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
-			log(this.getClass(), String.format(this.name + ": Iniciado pagamento do client " + getClientInAttendance().getName()));
+			log(this.getClass(), String.format(this.name + ": Iniciado pagamento do cliente " + getClientInAttendance().getName()));
 			//randomSleep(1, 2);
-			log(this.getClass(), String.format(this.name + ": Finalizado pagamento do client " + getClientInAttendance().getName()));
+			log(this.getClass(), String.format(this.name + ": Finalizado pagamento do cliente " + getClientInAttendance().getName()));
 		}
 		BarberShop.POS_IN_USE.set(false);
 		this.clientInAttendance.notifyClient();

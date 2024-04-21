@@ -96,6 +96,6 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logPOS() {
-		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NAO"));
+		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NÃO"));
 	}
 }

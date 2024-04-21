@@ -14,13 +14,13 @@ public class ClientQueue extends LinkedBlockingQueue<Client> {
 	}
 
 	public void notifyClient(Barber barber) {
-		log(this.getClass(), String.format("%s enviando notificacao", barber.getName()));
+		log(this.getClass(), String.format("%s enviando notificação", barber.getName()));
 		var client = this.poll();
 		if (nonNull(client)) {
 			barber.setClientInAttendance(client);
 			client.setBarber(barber);
 		}
 		sleep(300, MILLIS);
-		log(this.getClass(), String.format("%s finalizando notificacao", barber.getName()));
+		log(this.getClass(), String.format("%s finalizando notificação", barber.getName()));
 	}
 }

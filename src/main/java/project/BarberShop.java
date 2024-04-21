@@ -29,7 +29,7 @@ public class BarberShop {
 		try{
 			threadStream.forEach(Thread::start);
 		}catch(Exception e){
-			System.out.printf("cannot start barber threads");
+			System.out.printf("Não foi possível iniciar as threads");
 		}
 
 		System.out.printf("terminouuuuu");
