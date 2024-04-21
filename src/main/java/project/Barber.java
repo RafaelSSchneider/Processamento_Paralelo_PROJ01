@@ -32,7 +32,6 @@ public class Barber implements Runnable {
 
 				log(this.getClass(), String.format("%s: Atendimento finalizado para o cliente %s", this.name, clientInAttendance.getName()));
 				receivePayment();
-				//randomSleep(1, 2);
 				BarberShop.COUCH.notifyClient(this);
 			}
 			try {
@@ -64,7 +63,6 @@ public class Barber implements Runnable {
 	private void receivePayment() {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
 			log(this.getClass(), String.format(this.name + ": Iniciado pagamento do cliente " + getClientInAttendance().getName()));
-			//randomSleep(1, 2);
 			log(this.getClass(), String.format(this.name + ": Finalizado pagamento do cliente " + getClientInAttendance().getName()));
 		}
 		BarberShop.POS_IN_USE.set(false);

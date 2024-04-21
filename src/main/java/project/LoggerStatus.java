@@ -44,10 +44,6 @@ public class LoggerStatus implements Runnable {
 		}
 	}
 
-	public static void logTimeLeft() {
-		
-	}
-
 	public static void logQueue() {
 		List<String> clientQueue = BarberShop.QUEUE
 				.stream()
