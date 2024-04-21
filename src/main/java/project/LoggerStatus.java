@@ -44,6 +44,10 @@ public class LoggerStatus implements Runnable {
 		}
 	}
 
+	public static void logTimeLeft() {
+		
+	}
+
 	public static void logQueue() {
 		List<String> clientQueue = BarberShop.QUEUE
 				.stream()
@@ -88,7 +92,7 @@ public class LoggerStatus implements Runnable {
 				.forEach(barber -> log(LoggerStatus.class,
 						String.format("LOG | Barbeiro %s está %s", barber.getName(), barber.getClientInAttendance() == null
 								? "dormindo."
-								: "atendendo o cliente " + barber.getClientInAttendance().getName())));
+								: "atendendo o cliente " + barber.getClientInAttendance().getName() + " tempo restante: " + barber.getClientInAttendance().getDesiredHaircut().getTimeToCut())));
 	}
 
 	public static void logPOS() {

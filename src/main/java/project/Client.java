@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Client implements Runnable {
+public class Client implements Runnable{
 	private String name;
 	private Haircut desiredHaircut;
 	private Barber barber;
@@ -64,6 +64,9 @@ public class Client implements Runnable {
 		this.notify();
 	}
 
+	public synchronized void start() {
+		new Thread(this).start();
+	}
 	public synchronized void setBarber(Barber barber) {
 		log(this.getClass(), String.format("%s recebeu a notificacao do barbeiro %s", this.name, barber.getName()));
 		this.barber = barber;

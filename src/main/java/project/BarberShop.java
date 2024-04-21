@@ -1,11 +1,10 @@
 package project;
 
-import static java.lang.Thread.startVirtualThread;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class BarberShop {
 
@@ -19,21 +18,19 @@ public class BarberShop {
 	public static final AtomicReference<List<String>> clientesAtendidos = new AtomicReference<>(new ArrayList<>());
 
 	public static void main(String[] args) {
-		startVirtualThread(new LoggerStatus());
-		startVirtualThread(new ClientFactory());
+		new Thread(new LoggerStatus()).start();
+		new Thread(new ClientFactory()).start();
 
 		List<Thread> threadStream = BARBERS
 				.stream()
-				.map(Thread::startVirtualThread)
-				.toList();
-
-		threadStream.forEach(thread -> {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		});
+				.map(barber -> new Thread(barber))
+				.collect(Collectors.toList());
+			
+		try{
+			threadStream.forEach(Thread::start);
+		}catch(Exception e){
+			System.out.printf("cannot start barber threads");
+		}
 
 		System.out.printf("terminouuuuu");
 	}
