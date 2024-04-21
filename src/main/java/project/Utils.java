@@ -1,5 +1,9 @@
 package project;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.Random;
 
 import lombok.AccessLevel;
@@ -12,9 +16,9 @@ public class Utils {
 
 	private static final Random RANDOM = new Random();
 
-	public static void sleep(int secondsToSleep) {
+	public static void sleep(int amount, TemporalUnit temporalUnit) {
 		try {
-			Thread.sleep(secondsToSleep * 1000);
+			Thread.sleep(Duration.of(amount, temporalUnit));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -24,28 +28,12 @@ public class Utils {
 		return RANDOM.nextInt(minNumber, maxNumber);
 	}
 
-	public static void randomSleep() {
-		try {
-			Thread.sleep(RANDOM.nextLong(11) * 1000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public static void randomSleep(int maxSeconds) {
-		try {
-			Thread.sleep(RANDOM.nextLong(maxSeconds) * 1000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		sleep(randomNumber(0, maxSeconds), SECONDS);
 	}
 
 	public static void randomSleep(int minSeconds, int maxSeconds) {
-		try {
-			Thread.sleep(RANDOM.nextLong(minSeconds, maxSeconds) * 1000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		sleep(randomNumber(minSeconds, maxSeconds), SECONDS);
 	}
 
 	public static String randomName() {
