@@ -88,7 +88,7 @@ public class LoggerStatus implements Runnable {
 				.forEach(barber -> log(LoggerStatus.class,
 						String.format("LOG | Barbeiro %s está %s", barber.getName(), barber.getClientInAttendance() == null
 								? "dormindo."
-								: "atendendo o cliente " + barber.getClientInAttendance().getName() + " tempo restante: " + barber.getClientInAttendance().getDesiredHaircut().getTimeToCut())));
+								: "atendendo o cliente " + barber.getClientInAttendance().getName())));
 	}
 
 	public static void logPOS() {

@@ -64,6 +64,7 @@ public class Barber implements Runnable {
 		while (BarberShop.POS_IN_USE.compareAndSet(false, true)) {
 			log(this.getClass(), String.format(this.name + ": Iniciado pagamento do cliente " + getClientInAttendance().getName()));
 			log(this.getClass(), String.format(this.name + ": Finalizado pagamento do cliente " + getClientInAttendance().getName()));
+			randomSleep(1, 2);
 		}
 		BarberShop.POS_IN_USE.set(false);
 		this.clientInAttendance.notifyClient();
