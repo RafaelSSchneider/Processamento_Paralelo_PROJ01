@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Client implements Runnable {
+public class Client implements Runnable{
 	private String name;
 	private Haircut desiredHaircut;
 	private Barber barber;
@@ -24,7 +24,7 @@ public class Client implements Runnable {
 		int randomIndex = randomNumber(0, Haircut.values().length);
 		this.desiredHaircut = Haircut.values()[randomIndex];
 
-		log(this.getClass(), String.format(this.name + " created, they want " + desiredHaircut.getName()));
+		log(this.getClass(), String.format(this.name + " criado, ele/a deseja: " + desiredHaircut.getName()));
 	}
 
 	@Override

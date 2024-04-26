@@ -14,7 +14,7 @@ public class ClientFactory implements Runnable {
 				}
 			}
 			var client = new Client();
-			Thread.startVirtualThread(client);
+			new Thread(client).start();
 		}
 	}
 }
