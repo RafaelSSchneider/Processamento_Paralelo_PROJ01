@@ -9,14 +9,14 @@ import static project.Utils.sleep;
 import lombok.Getter;
 
 @Getter
-public class Barber implements Runnable {
-
+public class Barber implements Runnable, ISitsOnChair {
 	private final String name;
 	private Client clientInAttendance;
-	private boolean chair = false;
+  private boolean isSitting;
 
 	public Barber(String name) {
 		this.name = name;
+    this.isSitting = true;
 	}
 
 	@Override
@@ -24,8 +24,8 @@ public class Barber implements Runnable {
 		while (true) {
 			BarberShop.COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
-				this.chair = true;
 				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
+        this.clientInAttendance.isSitting = true;
 				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
 				this.doHaircut(clientHaircut);
@@ -35,7 +35,6 @@ public class Barber implements Runnable {
 				BarberShop.COUCH.notifyClient(this);
 			}
 			try {
-				this.chair = true;
 				log(this.getClass(), String.format("%s: Dormindo", this.name));
 				this.wait();
 			} catch (InterruptedException e) {
@@ -67,6 +66,7 @@ public class Barber implements Runnable {
 			randomSleep(1, 2);
 		}
 		BarberShop.POS_IN_USE.set(false);
+    this.clientInAttendance.isSitting = false;
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
