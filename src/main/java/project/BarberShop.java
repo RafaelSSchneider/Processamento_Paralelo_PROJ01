@@ -14,22 +14,20 @@ public class BarberShop {
 	public static final List<Barber> BARBERS = List.of(new Barber("Artur"), new Barber("Éber"), new Barber("Rafael"));
 	public static final ClientQueue COUCH = new ClientQueue(CAPACITY_COUCH);
 	public static final ClientQueue QUEUE = new ClientQueue(CAPACITY_QUEUE);
-	public static final AtomicReference<List<String>> clientesCriados = new AtomicReference<>(new ArrayList<>());
-	public static final AtomicReference<List<String>> clientesAtendidos = new AtomicReference<>(new ArrayList<>());
-	public static final AtomicReference<List<ISitsOnChair>> chairs = new AtomicReference<>(new ArrayList<>());
+	public static final AtomicReference<List<String>> CREATED_CLIENTS = new AtomicReference<>(new ArrayList<>());
+	public static final AtomicReference<List<String>> CLIENTS_SERVED = new AtomicReference<>(new ArrayList<>());
+	public static final AtomicReference<List<ISitsOnChair>> CHAIRS = new AtomicReference<>(new ArrayList<>());
 
 	public static void main(String[] args) {
-		for (int i = 0; i < BARBERS.size(); i++) {
-			chairs.get().add(BARBERS.get(i));
-		}
+		BARBERS.forEach(barber -> CHAIRS.get().add(barber));
 
 		new Thread(new LoggerStatus()).start();
 		new Thread(new ClientFactory()).start();
 
 		List<Thread> threadStream = BARBERS
 				.stream()
-				.map(barber -> new Thread(barber))
-				.collect(Collectors.toList());
+				.map(Thread::new)
+				.toList();
 
 		try {
 			threadStream.forEach(Thread::start);
@@ -37,6 +35,6 @@ public class BarberShop {
 			System.out.printf("Não foi possível iniciar as threads");
 		}
 
-		System.out.printf("terminouuuuu");
+		System.out.printf("Barbearia fechada");
 	}
 }

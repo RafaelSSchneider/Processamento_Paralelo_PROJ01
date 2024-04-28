@@ -7,14 +7,15 @@ import static project.Utils.randomNumber;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.Setter;
+
 
 @AllArgsConstructor
 @Getter
-@ToString
 @EqualsAndHashCode
 public class Client implements Runnable, ISitsOnChair {
-	public boolean isSitting;
+	@Setter
+	private boolean isSitting;
 	private String name;
 	private Haircut desiredHaircut;
 	private Barber barber;
@@ -44,7 +45,7 @@ public class Client implements Runnable, ISitsOnChair {
 					return;
 				}
 			}
-			BarberShop.clientesCriados.get().add(this.name);
+			BarberShop.CREATED_CLIENTS.get().add(this.name);
 
 			BarberShop.BARBERS.parallelStream()
 					.filter(barber1 -> barber1.getClientInAttendance() == null)
@@ -56,7 +57,7 @@ public class Client implements Runnable, ISitsOnChair {
 
 			this.wait();
 			log(this.getClass(), String.format("%s: está indo para casa", this.name));
-			BarberShop.clientesAtendidos.get().add(this.name);
+			BarberShop.CLIENTS_SERVED.get().add(this.name);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

@@ -2,6 +2,7 @@ package project;
 
 public class ClientFactory implements Runnable {
 
+	@SuppressWarnings("java:S2189")
 	@Override
 	public void run() {
 		while (true) {

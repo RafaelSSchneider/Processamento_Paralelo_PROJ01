@@ -13,16 +13,17 @@ public class LoggerStatus implements Runnable {
 
 	public static final Duration LOG_INTERVAL = Duration.of(2, ChronoUnit.SECONDS);
 	private static final Map<Class, Boolean> classActiveForLog = new HashMap<>() {{
-		put(Barber.class, true);
+		put(Barber.class, false);
 		put(BarberShop.class, false);
-		put(Client.class, true);
+		put(Client.class, false);
 		put(ClientFactory.class, false);
 		put(ClientQueue.class, false);
-		put(Haircut.class, true);
+		put(Haircut.class, false);
 		put(LoggerStatus.class, true);
-		put(Utils.class, true);
+		put(Utils.class, false);
 	}};
 
+	@SuppressWarnings("java:S2189")
 	@Override
 	public void run() {
 		while (true) {
@@ -33,8 +34,8 @@ public class LoggerStatus implements Runnable {
 			logBarbers();
 			logChairs();
 			System.out.printf("\n");
-			logClientCriados();
-			logClientAtendidos();
+			logCreatedClients();
+			logClientsServed();
 			System.out.printf("\n");
 
 			try {
@@ -61,22 +62,22 @@ public class LoggerStatus implements Runnable {
 		log(LoggerStatus.class, String.format("LOG | Clientes no sofa [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
-	public static void logClientAtendidos() {
-		List<String> clientCouch = BarberShop.clientesAtendidos.get()
+	public static void logClientsServed() {
+		List<String> clientCouch = BarberShop.CLIENTS_SERVED.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes atendidos [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
-	public static void logClientCriados() {
-		List<String> clientCouch = BarberShop.clientesCriados.get()
+	public static void logCreatedClients() {
+		List<String> clientCouch = BarberShop.CREATED_CLIENTS.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes criados [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
 	public static void logChairs() {
-		List<ISitsOnChair> chairs = BarberShop.chairs.get()
+		List<ISitsOnChair> chairs = BarberShop.CHAIRS.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));

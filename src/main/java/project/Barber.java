@@ -19,12 +19,13 @@ public class Barber implements Runnable, ISitsOnChair {
 		this.isSitting = true;
 	}
 
+	@SuppressWarnings("java:S2189")
 	@Override
 	public synchronized void run() {
 		while (true) {
 			BarberShop.COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
-				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
+				var clientHaircut = this.clientInAttendance.getDesiredHaircut();
 				this.sitClientDown();
 				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
@@ -60,9 +61,9 @@ public class Barber implements Runnable, ISitsOnChair {
 
 	private synchronized void sitClientDown() {
 		this.isSitting = false;
-		this.clientInAttendance.isSitting = true;
-		BarberShop.chairs.get().remove(this);
-		BarberShop.chairs.get().add(this.clientInAttendance);
+		this.clientInAttendance.setSitting(true);
+		BarberShop.CHAIRS.get().remove(this);
+		BarberShop.CHAIRS.get().add(this.clientInAttendance);
 	}
 
 	private void doHaircut(Haircut desiredHaircut) {
@@ -77,8 +78,9 @@ public class Barber implements Runnable, ISitsOnChair {
 			randomSleep(1, 2);
 		}
 		BarberShop.POS_IN_USE.set(false);
-		this.clientInAttendance.isSitting = false;
-		BarberShop.chairs.get().remove(this.clientInAttendance);
+		this.clientInAttendance.setSitting(false);
+		BarberShop.CHAIRS.get().remove(this.clientInAttendance);
+		BarberShop.CHAIRS.get().add(this);
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
