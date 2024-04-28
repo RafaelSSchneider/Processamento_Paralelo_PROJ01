@@ -12,11 +12,11 @@ import lombok.Getter;
 public class Barber implements Runnable, ISitsOnChair {
 	private final String name;
 	private Client clientInAttendance;
-  private boolean isSitting;
+	private boolean isSitting;
 
 	public Barber(String name) {
 		this.name = name;
-    this.isSitting = true;
+		this.isSitting = true;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class Barber implements Runnable, ISitsOnChair {
 			BarberShop.COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
 				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
-        this.sitClientDown();
+				this.sitClientDown();
 				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
 				this.doHaircut(clientHaircut);
@@ -54,12 +54,16 @@ public class Barber implements Runnable, ISitsOnChair {
 		this.notifyBarber();
 	}
 
-  private synchronized void sitClientDown() {
-    this.isSitting = false;
-    this.clientInAttendance.isSitting = true;
-    BarberShop.chairs.get().remove(this);
-    BarberShop.chairs.get().add(this.clientInAttendance);
-  }
+	public String toString() {
+		return this.getName();
+	}
+
+	private synchronized void sitClientDown() {
+		this.isSitting = false;
+		this.clientInAttendance.isSitting = true;
+		BarberShop.chairs.get().remove(this);
+		BarberShop.chairs.get().add(this.clientInAttendance);
+	}
 
 	private void doHaircut(Haircut desiredHaircut) {
 		log(this.getClass(), String.format("%s: está realizando: %s ", this.name, desiredHaircut.getName()));
@@ -73,13 +77,9 @@ public class Barber implements Runnable, ISitsOnChair {
 			randomSleep(1, 2);
 		}
 		BarberShop.POS_IN_USE.set(false);
-    this.clientInAttendance.isSitting = false;
-    BarberShop.chairs.get().remove(this.clientInAttendance);
+		this.clientInAttendance.isSitting = false;
+		BarberShop.chairs.get().remove(this.clientInAttendance);
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
-
-  public String toString() {
-    return this.getName();
-  }
 }

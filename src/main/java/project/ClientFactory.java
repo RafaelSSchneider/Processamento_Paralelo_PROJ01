@@ -9,7 +9,7 @@ public class ClientFactory implements Runnable {
 			int remainingCapacity = BarberShop.COUCH.remainingCapacity();
 			for (int i = 0; i < remainingCapacity; i++) {
 				var clientFromQueue = BarberShop.QUEUE.poll();
-				if (clientFromQueue != null){
+				if (clientFromQueue != null) {
 					BarberShop.COUCH.offer(clientFromQueue);
 				}
 			}

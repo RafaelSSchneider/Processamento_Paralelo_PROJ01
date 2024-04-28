@@ -14,10 +14,10 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class Client implements Runnable, ISitsOnChair {
+	public boolean isSitting;
 	private String name;
 	private Haircut desiredHaircut;
 	private Barber barber;
-  public boolean isSitting;
 
 	public Client() {
 		this.name = randomName();
@@ -26,7 +26,7 @@ public class Client implements Runnable, ISitsOnChair {
 		this.desiredHaircut = Haircut.values()[randomIndex];
 
 		log(this.getClass(), String.format(this.name + " criado. Deseja: " + desiredHaircut.getName()));
-    this.isSitting = false;
+		this.isSitting = false;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class Client implements Runnable, ISitsOnChair {
 		this.notifyClient();
 	}
 
-  public String toString() {
-    return this.getName();
-  }
+	public String toString() {
+		return this.getName();
+	}
 }

@@ -31,7 +31,7 @@ public class LoggerStatus implements Runnable {
 			logCouch();
 			logPOS();
 			logBarbers();
-      logChairs();
+			logChairs();
 			System.out.printf("\n");
 			logClientCriados();
 			logClientAtendidos();
@@ -75,12 +75,12 @@ public class LoggerStatus implements Runnable {
 		log(LoggerStatus.class, String.format("LOG | Clientes criados [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
-  public static void logChairs() {
-    List<ISitsOnChair> chairs = BarberShop.chairs.get()
-      .stream()
-      .toList();
-    log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));
-  }
+	public static void logChairs() {
+		List<ISitsOnChair> chairs = BarberShop.chairs.get()
+				.stream()
+				.toList();
+		log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));
+	}
 
 	public static void log(Class clazz, String string) {
 		var on = Optional.of(classActiveForLog.get(clazz))
@@ -91,15 +91,15 @@ public class LoggerStatus implements Runnable {
 		}
 	}
 
+	public static void logPOS() {
+		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NÃO"));
+	}
+
 	private static void logBarbers() {
 		BarberShop.BARBERS
 				.forEach(barber -> log(LoggerStatus.class,
 						String.format("LOG | Barbeiro %s está %s", barber.getName(), barber.getClientInAttendance() == null
 								? "dormindo."
 								: "atendendo o cliente " + barber.getClientInAttendance().getName())));
-	}
-
-	public static void logPOS() {
-		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NÃO"));
 	}
 }
