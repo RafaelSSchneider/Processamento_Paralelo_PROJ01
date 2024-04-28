@@ -1,5 +1,10 @@
 package project;
 
+import static project.BarberShop.BARBERS;
+import static project.BarberShop.CLIENTS_SERVED;
+import static project.BarberShop.COUCH;
+import static project.BarberShop.CREATED_CLIENTS;
+import static project.BarberShop.QUEUE;
 import static project.LoggerStatus.log;
 import static project.Utils.randomName;
 import static project.Utils.randomNumber;
@@ -33,11 +38,11 @@ public class Client implements Runnable, ISitsOnChair {
 	@Override
 	public synchronized void run() {
 		try {
-			var offer = BarberShop.COUCH.offer(this);
+			var offer = COUCH.offer(this);
 			if (offer) {
 				log(this.getClass(), String.format("Cliente adicionado sofá: %s ", this.getName()));
 			} else {
-				offer = BarberShop.QUEUE.offer(this);
+				offer = QUEUE.offer(this);
 				if (offer) {
 					log(this.getClass(), String.format("Cliente adicionado a fila: %s ", this.getName()));
 				} else {
@@ -45,9 +50,9 @@ public class Client implements Runnable, ISitsOnChair {
 					return;
 				}
 			}
-			BarberShop.CREATED_CLIENTS.get().add(this.name);
+			CREATED_CLIENTS.get().add(this.name);
 
-			BarberShop.BARBERS.parallelStream()
+			BARBERS.parallelStream()
 					.filter(barber1 -> barber1.getClientInAttendance() == null)
 					.findAny()
 					.ifPresent(Barber::notifyBarber);
@@ -57,7 +62,7 @@ public class Client implements Runnable, ISitsOnChair {
 
 			this.wait();
 			log(this.getClass(), String.format("%s: está indo para casa", this.name));
-			BarberShop.CLIENTS_SERVED.get().add(this.name);
+			CLIENTS_SERVED.get().add(this.name);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

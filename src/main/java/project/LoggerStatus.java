@@ -1,5 +1,11 @@
 package project;
 
+import static project.BarberShop.CHAIRS;
+import static project.BarberShop.CLIENTS_SERVED;
+import static project.BarberShop.COUCH;
+import static project.BarberShop.CREATED_CLIENTS;
+import static project.BarberShop.QUEUE;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +18,7 @@ import java.util.Optional;
 public class LoggerStatus implements Runnable {
 
 	public static final Duration LOG_INTERVAL = Duration.of(2, ChronoUnit.SECONDS);
-	private static final Map<Class, Boolean> classActiveForLog = new HashMap<>() {{
+	private static final Map<Class, Boolean> CLASS_ACTIVE_FOR_LOG = new HashMap<>() {{
 		put(Barber.class, false);
 		put(BarberShop.class, false);
 		put(Client.class, false);
@@ -47,7 +53,7 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logQueue() {
-		List<String> clientQueue = BarberShop.QUEUE
+		List<String> clientQueue = QUEUE
 				.stream()
 				.map(Client::getName)
 				.toList();
@@ -55,7 +61,7 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logCouch() {
-		List<String> clientCouch = BarberShop.COUCH
+		List<String> clientCouch = COUCH
 				.stream()
 				.map(Client::getName)
 				.toList();
@@ -63,28 +69,28 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logClientsServed() {
-		List<String> clientCouch = BarberShop.CLIENTS_SERVED.get()
+		List<String> clientCouch = CLIENTS_SERVED.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes atendidos [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
 	public static void logCreatedClients() {
-		List<String> clientCouch = BarberShop.CREATED_CLIENTS.get()
+		List<String> clientCouch = CREATED_CLIENTS.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes criados [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
 	public static void logChairs() {
-		List<ISitsOnChair> chairs = BarberShop.CHAIRS.get()
+		List<ISitsOnChair> chairs = CHAIRS.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));
 	}
 
 	public static void log(Class clazz, String string) {
-		var on = Optional.of(classActiveForLog.get(clazz))
+		var on = Optional.of(CLASS_ACTIVE_FOR_LOG.get(clazz))
 				.orElse(false);
 		if (on) {
 			String format = DateTimeFormatter.ISO_INSTANT.format(Instant.now());

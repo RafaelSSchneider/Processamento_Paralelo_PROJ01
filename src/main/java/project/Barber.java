@@ -2,6 +2,8 @@ package project;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.nonNull;
+import static project.BarberShop.CHAIRS;
+import static project.BarberShop.COUCH;
 import static project.LoggerStatus.log;
 import static project.Utils.randomSleep;
 import static project.Utils.sleep;
@@ -23,7 +25,7 @@ public class Barber implements Runnable, ISitsOnChair {
 	@Override
 	public synchronized void run() {
 		while (true) {
-			BarberShop.COUCH.notifyClient(this);
+			COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
 				var clientHaircut = this.clientInAttendance.getDesiredHaircut();
 				this.sitClientDown();
@@ -33,7 +35,7 @@ public class Barber implements Runnable, ISitsOnChair {
 
 				log(this.getClass(), String.format("%s: Atendimento finalizado para o cliente %s", this.name, clientInAttendance.getName()));
 				receivePayment();
-				BarberShop.COUCH.notifyClient(this);
+				COUCH.notifyClient(this);
 			}
 			try {
 				log(this.getClass(), String.format("%s: Dormindo", this.name));
@@ -62,8 +64,8 @@ public class Barber implements Runnable, ISitsOnChair {
 	private synchronized void sitClientDown() {
 		this.isSitting = false;
 		this.clientInAttendance.setSitting(true);
-		BarberShop.CHAIRS.get().remove(this);
-		BarberShop.CHAIRS.get().add(this.clientInAttendance);
+		CHAIRS.get().remove(this);
+		CHAIRS.get().add(this.clientInAttendance);
 	}
 
 	private void doHaircut(Haircut desiredHaircut) {
@@ -79,8 +81,8 @@ public class Barber implements Runnable, ISitsOnChair {
 		}
 		BarberShop.POS_IN_USE.set(false);
 		this.clientInAttendance.setSitting(false);
-		BarberShop.CHAIRS.get().remove(this.clientInAttendance);
-		BarberShop.CHAIRS.get().add(this);
+		CHAIRS.get().remove(this.clientInAttendance);
+		CHAIRS.get().add(this);
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
