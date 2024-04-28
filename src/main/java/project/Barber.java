@@ -2,6 +2,8 @@ package project;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.nonNull;
+import static project.BarberShop.CHAIRS;
+import static project.BarberShop.COUCH;
 import static project.LoggerStatus.log;
 import static project.Utils.randomSleep;
 import static project.Utils.sleep;
@@ -19,12 +21,13 @@ public class Barber implements Runnable, ISitsOnChair {
 		this.isSitting = true;
 	}
 
+	@SuppressWarnings("java:S2189")
 	@Override
 	public synchronized void run() {
 		while (true) {
-			BarberShop.COUCH.notifyClient(this);
+			COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
-				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
+				var clientHaircut = this.clientInAttendance.getDesiredHaircut();
 				this.sitClientDown();
 				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
@@ -32,7 +35,7 @@ public class Barber implements Runnable, ISitsOnChair {
 
 				log(this.getClass(), String.format("%s: Atendimento finalizado para o cliente %s", this.name, clientInAttendance.getName()));
 				receivePayment();
-				BarberShop.COUCH.notifyClient(this);
+				COUCH.notifyClient(this);
 			}
 			try {
 				log(this.getClass(), String.format("%s: Dormindo", this.name));
@@ -60,9 +63,9 @@ public class Barber implements Runnable, ISitsOnChair {
 
 	private synchronized void sitClientDown() {
 		this.isSitting = false;
-		this.clientInAttendance.isSitting = true;
-		BarberShop.chairs.get().remove(this);
-		BarberShop.chairs.get().add(this.clientInAttendance);
+		this.clientInAttendance.setSitting(true);
+		CHAIRS.get().remove(this);
+		CHAIRS.get().add(this.clientInAttendance);
 	}
 
 	private void doHaircut(Haircut desiredHaircut) {
@@ -77,8 +80,9 @@ public class Barber implements Runnable, ISitsOnChair {
 			randomSleep(1, 2);
 		}
 		BarberShop.POS_IN_USE.set(false);
-		this.clientInAttendance.isSitting = false;
-		BarberShop.chairs.get().remove(this.clientInAttendance);
+		this.clientInAttendance.setSitting(false);
+		CHAIRS.get().remove(this.clientInAttendance);
+		CHAIRS.get().add(this);
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
