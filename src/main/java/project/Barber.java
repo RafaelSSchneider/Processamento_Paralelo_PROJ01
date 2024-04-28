@@ -25,7 +25,7 @@ public class Barber implements Runnable, ISitsOnChair {
 			BarberShop.COUCH.notifyClient(this);
 			while (nonNull(clientInAttendance)) {
 				Haircut clientHaircut = this.clientInAttendance.getDesiredHaircut();
-        this.clientInAttendance.isSitting = true;
+        this.sitClientDown();
 				log(this.getClass(), String.format("%s: Atendimento iniciado para o cliente %s", this.name, clientInAttendance.getName()));
 
 				this.doHaircut(clientHaircut);
@@ -54,6 +54,13 @@ public class Barber implements Runnable, ISitsOnChair {
 		this.notifyBarber();
 	}
 
+  private synchronized void sitClientDown() {
+    this.isSitting = false;
+    this.clientInAttendance.isSitting = true;
+    BarberShop.chairs.get().remove(this);
+    BarberShop.chairs.get().add(this.clientInAttendance);
+  }
+
 	private void doHaircut(Haircut desiredHaircut) {
 		log(this.getClass(), String.format("%s: está realizando: %s ", this.name, desiredHaircut.getName()));
 		sleep(desiredHaircut.getTimeToCut(), SECONDS);
@@ -67,7 +74,12 @@ public class Barber implements Runnable, ISitsOnChair {
 		}
 		BarberShop.POS_IN_USE.set(false);
     this.clientInAttendance.isSitting = false;
+    BarberShop.chairs.get().remove(this.clientInAttendance);
 		this.clientInAttendance.notifyClient();
 		this.clientInAttendance = null;
 	}
+
+  public String toString() {
+    return this.getName();
+  }
 }

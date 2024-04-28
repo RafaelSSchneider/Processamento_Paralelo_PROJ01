@@ -71,4 +71,8 @@ public class Client implements Runnable, ISitsOnChair {
 		this.barber = barber;
 		this.notifyClient();
 	}
+
+  public String toString() {
+    return this.getName();
+  }
 }
