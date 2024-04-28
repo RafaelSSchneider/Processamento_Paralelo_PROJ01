@@ -31,6 +31,7 @@ public class LoggerStatus implements Runnable {
 			logCouch();
 			logPOS();
 			logBarbers();
+      logChairs();
 			System.out.printf("\n");
 			logClientCriados();
 			logClientAtendidos();
@@ -73,6 +74,13 @@ public class LoggerStatus implements Runnable {
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes criados [%d]: %s", clientCouch.size(), clientCouch));
 	}
+
+  public static void logChairs() {
+    List<ISitsOnChair> chairs = BarberShop.chairs.get()
+      .stream()
+      .toList();
+    log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));
+  }
 
 	public static void log(Class clazz, String string) {
 		var on = Optional.of(classActiveForLog.get(clazz))
