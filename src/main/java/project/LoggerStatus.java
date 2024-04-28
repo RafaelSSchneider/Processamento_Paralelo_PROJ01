@@ -1,5 +1,11 @@
 package project;
 
+import static project.BarberShop.CHAIRS;
+import static project.BarberShop.CLIENTS_SERVED;
+import static project.BarberShop.COUCH;
+import static project.BarberShop.CREATED_CLIENTS;
+import static project.BarberShop.QUEUE;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -12,17 +18,18 @@ import java.util.Optional;
 public class LoggerStatus implements Runnable {
 
 	public static final Duration LOG_INTERVAL = Duration.of(2, ChronoUnit.SECONDS);
-	private static final Map<Class, Boolean> classActiveForLog = new HashMap<>() {{
-		put(Barber.class, true);
+	private static final Map<Class, Boolean> CLASS_ACTIVE_FOR_LOG = new HashMap<>() {{
+		put(Barber.class, false);
 		put(BarberShop.class, false);
-		put(Client.class, true);
+		put(Client.class, false);
 		put(ClientFactory.class, false);
 		put(ClientQueue.class, false);
-		put(Haircut.class, true);
+		put(Haircut.class, false);
 		put(LoggerStatus.class, true);
-		put(Utils.class, true);
+		put(Utils.class, false);
 	}};
 
+	@SuppressWarnings("java:S2189")
 	@Override
 	public void run() {
 		while (true) {
@@ -31,9 +38,10 @@ public class LoggerStatus implements Runnable {
 			logCouch();
 			logPOS();
 			logBarbers();
+			logChairs();
 			System.out.printf("\n");
-			logClientCriados();
-			logClientAtendidos();
+			logCreatedClients();
+			logClientsServed();
 			System.out.printf("\n");
 
 			try {
@@ -45,7 +53,7 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logQueue() {
-		List<String> clientQueue = BarberShop.QUEUE
+		List<String> clientQueue = QUEUE
 				.stream()
 				.map(Client::getName)
 				.toList();
@@ -53,34 +61,45 @@ public class LoggerStatus implements Runnable {
 	}
 
 	public static void logCouch() {
-		List<String> clientCouch = BarberShop.COUCH
+		List<String> clientCouch = COUCH
 				.stream()
 				.map(Client::getName)
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes no sofa [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
-	public static void logClientAtendidos() {
-		List<String> clientCouch = BarberShop.clientesAtendidos.get()
+	public static void logClientsServed() {
+		List<String> clientCouch = CLIENTS_SERVED.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes atendidos [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
-	public static void logClientCriados() {
-		List<String> clientCouch = BarberShop.clientesCriados.get()
+	public static void logCreatedClients() {
+		List<String> clientCouch = CREATED_CLIENTS.get()
 				.stream()
 				.toList();
 		log(LoggerStatus.class, String.format("LOG | Clientes criados [%d]: %s", clientCouch.size(), clientCouch));
 	}
 
+	public static void logChairs() {
+		List<ISitsOnChair> chairs = CHAIRS.get()
+				.stream()
+				.toList();
+		log(LoggerStatus.class, String.format("LOG | Estão nas cadeiras [%d]: %s", chairs.size(), chairs));
+	}
+
 	public static void log(Class clazz, String string) {
-		var on = Optional.of(classActiveForLog.get(clazz))
+		var on = Optional.of(CLASS_ACTIVE_FOR_LOG.get(clazz))
 				.orElse(false);
 		if (on) {
 			String format = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
 			System.out.printf("\n%s | %s", format, string);
 		}
+	}
+
+	public static void logPOS() {
+		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NÃO"));
 	}
 
 	private static void logBarbers() {
@@ -89,9 +108,5 @@ public class LoggerStatus implements Runnable {
 						String.format("LOG | Barbeiro %s está %s", barber.getName(), barber.getClientInAttendance() == null
 								? "dormindo."
 								: "atendendo o cliente " + barber.getClientInAttendance().getName())));
-	}
-
-	public static void logPOS() {
-		log(LoggerStatus.class, "LOG | POS está em uso: " + (BarberShop.POS_IN_USE.get() ? "SIM" : "NÃO"));
 	}
 }
