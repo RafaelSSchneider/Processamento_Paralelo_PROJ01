@@ -19,6 +19,10 @@ public class ClientQueue extends LinkedBlockingQueue<Client> {
 		if (nonNull(client)) {
 			barber.setClientInAttendance(client);
 			client.setBarber(barber);
+			var clientQueue = BarberShop.QUEUE.poll();
+			if (clientQueue != null ){
+				this.offer(clientQueue);
+			}
 		}
 		sleep(300, MILLIS);
 		log(this.getClass(), String.format("%s finalizando notificação", barber.getName()));
